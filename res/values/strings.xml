@@ -9,4 +9,9 @@
     <string name="password">Password:</string>
 	<string name="button_sign_in">Sign In</string>
 	
+	<string name="no_sender">No sender</string>
+	<string name="no_subject">No subject</string>
+	<string name="no_date">Date</string>
+	<string name="no_time">Time</string>
+	
 </resources>

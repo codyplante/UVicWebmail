@@ -1,29 +1,29 @@
 package com.plantec.uwm;
 
 import com.plantec.uwm.http.HttpManager;
+import com.plantec.uwm.mail.MailHandler;
 
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
+import android.widget.ListView;
 import android.widget.TextView;
 
 public class MainActivity extends Activity {
 	private HttpManager mHttp;
-	private TextView view;
-//	private ListView mMailList;
+	private TextView mText;
+	private ListView mList;
 	private String mUsername;
 	private String mPassword;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
+		setContentView(R.layout.main_activity);
 		
-		view = (TextView) findViewById(R.id.text);
-//		mMailList = (ListView) findViewById(R.id.main_list);
+		mText = (TextView) findViewById(R.id.text);
+		mList = (ListView) findViewById(R.id.main_list);
 		mHttp = HttpManager.getInstance();
-		
-		view.setText("hello");
 		
 		Intent intent = getIntent();
 		mUsername = intent.getExtras().get("username").toString();
@@ -37,6 +37,14 @@ public class MainActivity extends Activity {
 			e.printStackTrace();
 		}
 		
-		view.setText(Integer.toString(result));
+		MailHandler mHandler = new MailHandler();
+		
+		
+		ListAdapter adapter = new ListAdapter(this, 
+                R.layout.main_list_item, mHandler.getMail());
+        
+        mList.setAdapter(adapter);
+		
+		mText.setText(Integer.toString(result));
 	}
 }

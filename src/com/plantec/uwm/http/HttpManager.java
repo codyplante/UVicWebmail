@@ -20,6 +20,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.protocol.HttpContext;
+import org.apache.http.util.EntityUtils;
 
 public class HttpManager {
 	private static final String URL_LOGIN = "https://www.uvic.ca/cas/login?service=http%3A%2F%2Fwww.uvic.ca%2F";
@@ -87,8 +88,18 @@ public class HttpManager {
 		mResponse = httpPost(URL_REDIRECT, nvps);
 		consumeEntity(mResponse);
 		
-		mResponse = httpGet(URL_CONTENT);
 		return getCookieCount();	
+	}
+	
+	
+	//TODO BETTER THIS (Repetitive)
+	public String getContent() throws Exception{
+		mResponse = httpGet(URL_CONTENT);
+		return EntityUtils.toString(mResponse.getEntity());
+	}
+	public String getFolders() throws Exception{
+		mResponse = httpGet(URL_CONTENT);
+		return EntityUtils.toString(mResponse.getEntity());
 	}
 	
 	public HttpResponse httpGet(String url) throws IOException{
