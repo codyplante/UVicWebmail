@@ -1,6 +1,6 @@
 package com.plantec.uwm;
 
-import com.plantec.uwm.server.BaseHTTPCommand;
+import com.plantec.uwm.http.HttpManager;
 
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -14,18 +14,21 @@ import android.view.View;
 import android.widget.EditText;
 
 public class LoginActivity extends Activity {
-	BaseHTTPCommand http = new BaseHTTPCommand();
-	EditText mUsernameField;
-	EditText mPasswordField;
+	private HttpManager mHttp;
+	private EditText mUsernameField;
+	private EditText mPasswordField;
+	private String mUsername;
+	private String mPassword;
 	
 	@SuppressLint("NewApi")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_login);
-		
+	
 		mUsernameField = (EditText) findViewById(R.id.netLinkText);
 		mPasswordField = (EditText) findViewById(R.id.passwordText);
+		mHttp = HttpManager.getInstance();
 		
 		//TODO ASYNC TASK
 		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
@@ -33,19 +36,23 @@ public class LoginActivity extends Activity {
 	}
 	
 	public void login(View view){
+		mUsername = mUsernameField.getText().toString();
+		mPassword = mPasswordField.getText().toString();
 		try {
-			if (!isNetworkAvailable())
+			if (!isNetworkAvailable()){
+				mUsernameField.setText("Network Bro");
 				throw new Exception("Network not available");
-			
-			if (http.login(mUsernameField.getText().toString(), mPasswordField.getText().toString()) <= 1)
+			}
+			if (mHttp.login(mUsername, mPassword) <= 1){
+				mUsernameField.setText("Wrong Creds");
 				throw new Exception("Wrong creds");
-			
+			}
 			Intent intent = new Intent(this, MainActivity.class);
-			intent.putExtra("username", mUsernameField.getText().toString());
-			intent.putExtra("password", mPasswordField.getText().toString());
+			intent.putExtra("username", mUsername);
+			intent.putExtra("password", mPassword);
 			startActivity(intent);
 		} catch (Exception e) {
-			mUsernameField.setText("Wrong Creds");
+			//mUsernameField.setText("Wrong Creds");
 			mPasswordField.setText("");
 			//The credentials you entered do not match our records. Try again.
 			e.printStackTrace();

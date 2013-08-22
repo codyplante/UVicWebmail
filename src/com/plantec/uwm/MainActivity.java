@@ -1,6 +1,6 @@
 package com.plantec.uwm;
 
-import com.plantec.uwm.server.BaseHTTPCommand;
+import com.plantec.uwm.http.HttpManager;
 
 import android.os.Bundle;
 import android.app.Activity;
@@ -8,27 +8,35 @@ import android.content.Intent;
 import android.widget.TextView;
 
 public class MainActivity extends Activity {
-	BaseHTTPCommand http = new BaseHTTPCommand();
-	TextView view;
-//	ListView mMailList;
+	private HttpManager mHttp;
+	private TextView view;
+//	private ListView mMailList;
+	private String mUsername;
+	private String mPassword;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		TextView view = (TextView) findViewById(R.id.text);
+		
+		view = (TextView) findViewById(R.id.text);
 //		mMailList = (ListView) findViewById(R.id.main_list);
+		mHttp = HttpManager.getInstance();
+		
 		view.setText("hello");
 		
 		Intent intent = getIntent();
-		String result = "";
+		mUsername = intent.getExtras().get("username").toString();
+		mPassword = intent.getExtras().get("password").toString();
+		
+		int result = 0;
 		try {
-			http.login(intent.getExtras().get("username").toString(), intent.getExtras().get("password").toString());
-			result = http.webmailLogin(intent.getExtras().get("username").toString(), intent.getExtras().get("password").toString());
+			result = mHttp.webmailLogin(mUsername, mPassword);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
-		view.setText(result);
+		view.setText(Integer.toString(result));
 	}
 }

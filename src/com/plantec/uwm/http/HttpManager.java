@@ -1,7 +1,6 @@
-package com.plantec.uwm.server;
+package com.plantec.uwm.http;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,28 +20,40 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.protocol.HttpContext;
-import org.apache.http.util.EntityUtils;
 
-public class BaseHTTPCommand {
+public class HttpManager {
 	private static final String URL_LOGIN = "https://www.uvic.ca/cas/login?service=http%3A%2F%2Fwww.uvic.ca%2F";
 	private static final String URL_WLOGIN = "https://wm3.uvic.ca/src/CASlogin.php"; 
 	private static final String URL_REDIRECT = "https://wm3.uvic.ca/src/redirect.php";
 	private static final String URL_CONTENT = "https://wm3.uvic.ca/src/right_main.php";
 	private static final String URL_FOLDERS = "https://wm3.uvic.ca/src/left_main.php";
 	
-	private CookieStore mCookieStore = new BasicCookieStore();
-	private HttpContext mLocalContext = new BasicHttpContext();
-	private static DefaultHttpClient mHttpClient = new DefaultHttpClient();
+	private static HttpManager mManager = null;
+	private static DefaultHttpClient mHttpClient = null;
+	
+	private CookieStore mCookieStore;
+	private HttpContext mLocalContext;
 	private HttpResponse mResponse;
 	private HttpGet mHttpGet;
 	private HttpPost mHttpPost;
 	private List <NameValuePair> nvps;
 	
-	public BaseHTTPCommand(){
+	private HttpManager(){
+		mHttpClient = new DefaultHttpClient();
+		mCookieStore = new BasicCookieStore();
+		mLocalContext = new BasicHttpContext();
+		mHttpClient = new DefaultHttpClient();
 		mLocalContext.setAttribute(ClientContext.COOKIE_STORE, mCookieStore);
 		mHttpClient.getParams().setParameter(ClientPNames.ALLOW_CIRCULAR_REDIRECTS, true);
 	}
-
+	
+	public static HttpManager getInstance(){
+		if (mManager == null)
+			mManager = new HttpManager();
+		
+		return mManager;
+	}
+	
 	public int login(String username, String password) throws Exception{
 		mResponse = httpGet(URL_LOGIN);
 		consumeEntity(mResponse);
