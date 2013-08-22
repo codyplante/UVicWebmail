@@ -1,20 +1,19 @@
 package com.plantec.uwm.server;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.params.ClientPNames;
 import org.apache.http.client.protocol.ClientContext;
+import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
@@ -24,6 +23,12 @@ import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 
 public class BaseHTTPCommand {
+	private static final String URL_LOGIN = "https://www.uvic.ca/cas/login?service=http%3A%2F%2Fwww.uvic.ca%2F";
+	private static final String URL_WLOGIN = "https://wm3.uvic.ca/src/CASlogin.php"; 
+	private static final String URL_REDIRECT = "https://wm3.uvic.ca/src/redirect.php";
+	private static final String URL_CONTENT = "https://wm3.uvic.ca/src/right_main.php";
+	private static final String URL_FOLDERS = "https://wm3.uvic.ca/src/left_main.php";
+	
 	private CookieStore mCookieStore = new BasicCookieStore();
 	private HttpContext mLocalContext = new BasicHttpContext();
 	private DefaultHttpClient mHttpClient = new DefaultHttpClient();
@@ -37,8 +42,8 @@ public class BaseHTTPCommand {
 		mHttpClient.getParams().setParameter(ClientPNames.ALLOW_CIRCULAR_REDIRECTS, true);
 	}
 
-	public void login(String username, String password) throws Exception{
-		mResponse = httpGet("https://www.uvic.ca/cas/login?service=http%3A%2F%2Fwww.uvic.ca%2F");
+	public int login(String username, String password) throws Exception{
+		mResponse = httpGet(URL_LOGIN);
 		consumeEntity(mResponse);
 		
 		nvps = new ArrayList <NameValuePair>();
@@ -46,8 +51,10 @@ public class BaseHTTPCommand {
 		nvps.add(new BasicNameValuePair("password", password));
 		nvps.add(new BasicNameValuePair("lt", "e1s1"));
 		nvps.add(new BasicNameValuePair("_eventId", "submit"));
-		mResponse = httpPost("https://www.uvic.ca/cas/login?service=http%3A%2F%2Fdev.uvic.ca%2Fcurrent-students%2Findex.php", nvps);
+		mResponse = httpPost(URL_LOGIN, nvps);
 		consumeEntity(mResponse);
+		
+		return getCookieCount();
 	}
 	
 	public void consumeEntity(HttpResponse response) throws Exception{
@@ -62,13 +69,13 @@ public class BaseHTTPCommand {
 		nvps = new ArrayList <NameValuePair>();
 		nvps.add(new BasicNameValuePair("login_username", username));
 		nvps.add(new BasicNameValuePair("secretkey", password));
-		mResponse = httpPost("https://wm3.uvic.ca/src/CASlogin.php", nvps);
+		mResponse = httpPost(URL_WLOGIN, nvps);
 		consumeEntity(mResponse);
 		
-		mResponse = httpPost("https://wm3.uvic.ca/src/redirect.php", nvps);
+		mResponse = httpPost(URL_REDIRECT, nvps);
 		consumeEntity(mResponse);
 		
-		mResponse = httpGet("https://wm3.uvic.ca/src/right_main.php");
+		mResponse = httpGet(URL_CONTENT);
 		return EntityUtils.toString(mResponse.getEntity());	
 	}
 	
@@ -82,4 +89,9 @@ public class BaseHTTPCommand {
 		mHttpPost.setEntity(new UrlEncodedFormEntity(credentials, HTTP.UTF_8));
 		return mHttpClient.execute(mHttpPost, mLocalContext);
 	}
+	
+	public int getCookieCount(){
+		List<Cookie> cookies = mCookieStore.getCookies();
+		return cookies.size();
+ 	}
 }
