@@ -38,13 +38,15 @@ public class LoginActivity extends Activity {
 	public void login(View view){
 		mUsername = mUsernameField.getText().toString();
 		mPassword = mPasswordField.getText().toString();
+//		mUsername = "cplante";
+//		mPassword = "Dragoon1";
 		try {
 			if (!isNetworkAvailable()){
 				mUsernameField.setText("Network Bro");
 				throw new Exception("Network not available");
 			}
 			if (mHttp.login(mUsername, mPassword) <= 1){
-				mUsernameField.setText("Wrong Creds");
+				mUsernameField.setText("Wrong Creds Bro");
 				throw new Exception("Wrong creds");
 			}
 			Intent intent = new Intent(this, MainActivity.class);

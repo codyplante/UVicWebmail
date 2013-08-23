@@ -15,13 +15,53 @@ public class MailHandler {
 	private Mail mail;
 
 	public MailHandler(){
+		http = HttpManager.getInstance();
+		mailList = new ArrayList<Mail>();
+	}
+	
+	public Document complete(){
 		Document doc = null;
 		try {
+			String tester = http.getContent();
+			System.out.print(tester);
 			doc = Jsoup.parse(http.getContent());
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		return doc;
+/*		Elements list2 = doc.getElementsByAttributeValue("valign", "top");
+		int i = 0;
+		for (Element link2 : list2){
+			System.out.println(link2.toString());
+			System.out.println(link2.text());
+			Elements info = link2.getElementsByTag("TD");
+			if (info.isEmpty()){
+				continue;
+			}
+			i = 0;
+			mail = new Mail();
+			for (Element data : info){
+				switch(i){
+					case 1:
+						mail.setSender(data.text());
+						break;
+					case 2:
+						mail.setReceieved(data.text());
+						break;
+					case 4:
+						mail.setSubject(data.text());
+						Elements yo = data.getElementsByTag("a");
+						mail.setUrl(yo.first().attr("href").toString());
+						break;
+				}
+				i++;
+			}
+			mailList.add(mail);
+		}
+*/	}
+	
+	public void parse(Document doc){
 		Elements list2 = doc.getElementsByAttributeValue("valign", "top");
 		int i = 0;
 		for (Element link2 : list2){
@@ -52,7 +92,6 @@ public class MailHandler {
 			mailList.add(mail);
 		}
 	}
-	
 	
 	
 	public ArrayList<Mail> getMail(){

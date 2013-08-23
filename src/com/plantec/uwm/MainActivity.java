@@ -1,5 +1,7 @@
 package com.plantec.uwm;
 
+import org.jsoup.nodes.Document;
+
 import com.plantec.uwm.http.HttpManager;
 import com.plantec.uwm.mail.MailHandler;
 
@@ -38,7 +40,8 @@ public class MainActivity extends Activity {
 		}
 		
 		MailHandler mHandler = new MailHandler();
-		
+		Document temp = mHandler.complete();
+		mHandler.parse(temp);
 		
 		ListAdapter adapter = new ListAdapter(this, 
                 R.layout.main_list_item, mHandler.getMail());
