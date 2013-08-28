@@ -10,6 +10,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.view.View;
 import android.widget.EditText;
 
@@ -38,8 +39,7 @@ public class LoginActivity extends Activity {
 	public void login(View view){
 		mUsername = mUsernameField.getText().toString();
 		mPassword = mPasswordField.getText().toString();
-//		mUsername = "cplante";
-//		mPassword = "Dragoon1";
+		
 		try {
 			if (!isNetworkAvailable()){
 				mUsernameField.setText("Network Bro");
@@ -49,9 +49,14 @@ public class LoginActivity extends Activity {
 				mUsernameField.setText("Wrong Creds Bro");
 				throw new Exception("Wrong creds");
 			}
+			
+			SharedPreferences settings = getSharedPreferences("UserInfo", 0);
+			SharedPreferences.Editor editor = settings.edit();
+			editor.putString("Username", mUsername);
+			editor.putString("Password", mPassword);
+			editor.commit();
+			
 			Intent intent = new Intent(this, MainActivity.class);
-			intent.putExtra("username", mUsername);
-			intent.putExtra("password", mPassword);
 			startActivity(intent);
 		} catch (Exception e) {
 			//mUsernameField.setText("Wrong Creds");
