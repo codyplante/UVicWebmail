@@ -37,52 +37,44 @@
         android:layout_height="match_parent" >
         
        	<LinearLayout
-       	    android:layout_width="match_parent"
+       	    android:layout_width="wrap_content"
     		android:layout_height="wrap_content"
     		android:layout_gravity="center"
        		android:gravity="center_horizontal"
        		android:padding="16dp"
         	android:orientation="vertical" >
-       	    
-            <TextView
-		        android:id="@+id/netLinkTextView"
-		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        android:text="@string/promt_netlink"
-		        android:textAppearance="?android:attr/textAppearanceLarge" />
-       	 
+       	   
 		    <EditText
-		        android:id="@+id/netLinkText"
+		        android:id="@+id/netLink_id"
 		        android:layout_width="wrap_content"
 		        android:layout_height="wrap_content"
-		        android:ems="10"
-		        tools:ignore="TextFields"
+		        android:hint="@string/promt_netlink"
+		        android:ems="12"
+		        android:inputType="text"
+		        android:maxLines="1"
 		        android:singleLine="true" />
 		    
-		    <TextView
-		        android:id="@+id/passwordTextView"
-		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        android:layout_marginTop="20dp"
-		        android:text="@string/promt_password"
-		        android:textAppearance="?android:attr/textAppearanceLarge" />
-
 		    <EditText
-		        android:id="@+id/passwordText"
+		        android:id="@+id/password"
 		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        android:ems="10" 
+		        android:layout_height="wrap_content" 
+		        android:layout_marginTop="20dp"
+		        android:hint="@string/promt_password"
+		        android:ems="12"
+		       	android:imeActionId="@+id/login"
+                android:imeActionLabel="@string/action_sign_in"
+                android:imeOptions="actionUnspecified"
 		        android:inputType="textPassword"
+		        android:maxLines="1"
 		        android:singleLine="true" />
 
 		    <Button
-		        android:id="@+id/buttonSignIn"
+		        android:id="@+id/sign_in_button"
 		        android:layout_width="wrap_content"
 		        android:layout_height="wrap_content"
 		        android:layout_marginTop="47dp"
-		        android:text="@string/action_sign_in"
-		        android:onClick="login" />
-		  
+		        android:text="@string/action_sign_in" />
+		    
 		</LinearLayout>
     </ScrollView>
 </merge>

@@ -6,8 +6,8 @@
     
     <!-- Login Strings -->
     <string name="title_activity_login">Login</string>
-    <string name="promt_netlink">NetLink ID:</string>
-    <string name="promt_password">Password:</string>
+    <string name="promt_netlink">NetLink ID</string>
+    <string name="promt_password">Password</string>
     <string name="action_sign_in">Sign In</string>
     <string name="login_progress_signing_in">Signing in&#8230;</string>
  	<string name="error_incorrect_credentials">The credentials you entered do not match our records.</string>

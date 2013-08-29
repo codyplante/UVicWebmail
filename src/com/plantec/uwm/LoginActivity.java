@@ -15,7 +15,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -23,7 +25,7 @@ public class LoginActivity extends Activity {
 	private HttpManager mHttp;
 	private String mUsername;
 	private String mPassword;
-	private UserLoginTask mAuthenticator = null;
+	private UserLoginTask mAuthenticator;
 	
 	private EditText mUsernameField;
 	private EditText mPasswordField;
@@ -37,16 +39,37 @@ public class LoginActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.login_activity);
 	
-		mUsernameField = (EditText) findViewById(R.id.netLinkText);
-		mPasswordField = (EditText) findViewById(R.id.passwordText);
+		mUsernameField = (EditText) findViewById(R.id.netLink_id);
+		mPasswordField = (EditText) findViewById(R.id.password);
+		mPasswordField.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+			@Override
+			public boolean onEditorAction(TextView textView, int id,
+					KeyEvent keyEvent) {
+				if (id == R.id.login || id == EditorInfo.IME_NULL) {
+					attemptLogin();
+					return true;
+				}
+				return false;
+			}
+		});
+		
 		mLoginFormView = findViewById(R.id.login_form);
 		mLoginStatusView = findViewById(R.id.login_status);
 		mLoginStatusMessageView = (TextView) findViewById(R.id.login_status_message);
 		
+		findViewById(R.id.sign_in_button).setOnClickListener(
+			new View.OnClickListener() {
+				@Override
+				public void onClick(View view) {
+					attemptLogin();
+				}
+			});
+		
 		mHttp = HttpManager.getInstance();
+		mAuthenticator = null;
 	}
 	
-	public void login(View view){
+	public void attemptLogin(){
 		if (mAuthenticator != null) {
 			return;
 		}
@@ -58,7 +81,7 @@ public class LoginActivity extends Activity {
 		mPassword = mPasswordField.getText().toString();
 		
 		boolean cancel = false;
-		View focusView = null;
+		View focusView = mUsernameField;
 		
 		if (TextUtils.isEmpty(mPassword)){
 			mPasswordField.setError(getString(R.string.error_field_required));
@@ -68,17 +91,14 @@ public class LoginActivity extends Activity {
 		
 		if (TextUtils.isEmpty(mUsername)){
 			mUsernameField.setError(getString(R.string.error_field_required));
-			focusView = mUsernameField;
 			cancel = true;
-		} else if (mUsername.contains("@uvic.ca")){
+		} else if (mUsername.contains("@")){
 			mUsernameField.setError(getString(R.string.error_netlink_format));
-			focusView = mUsernameField;
 			cancel = true;
 		}
 		
 		if (!isNetworkAvailable()){
 			mUsernameField.setError(getString(R.string.error_unavailable_network));
-			focusView = mUsernameField;
 			cancel = true;
 		}
 		
