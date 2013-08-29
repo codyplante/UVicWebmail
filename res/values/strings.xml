@@ -1,13 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <!-- General Strings -->
     <string name="app_name">Webmail</string>
+    
+    <!-- Login Strings -->
+    <string name="title_activity_login">Login</string>
+    <string name="promt_netlink">NetLink ID:</string>
+    <string name="promt_password">Password:</string>
+    <string name="action_sign_in">Sign In</string>
+    <string name="login_progress_signing_in">Signing in&#8230;</string>
+ 	<string name="error_incorrect_credentials">The credentials you entered do not match our records.</string>
+    <string name="error_unavailable_network">No available network</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="error_netlink_format">Do not include "@uvic.ca"</string>
+    
+    <!-- Main Strings -->
     <string name="action_settings">Settings</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="title_activity_login">LoginActivity</string>
-    <string name="netlink">NetLink ID:</string>
-    <string name="password">Password:</string>
-    <string name="button_sign_in">Sign In</string>
     <string name="no_sender">No sender</string>
     <string name="no_subject">No subject</string>
     <string name="no_date">Date</string>

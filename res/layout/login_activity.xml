@@ -1,71 +1,88 @@
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".LoginActivity" >
-
     
-        <ScrollView
+	<!-- Login progress -->
+
+    <LinearLayout
+        android:id="@+id/login_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:visibility="gone" >
+
+        <ProgressBar
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:id="@+id/login_status_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:fontFamily="sans-serif-light"
+            android:text="@string/login_progress_signing_in"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+    </LinearLayout>
+    
+    <!-- Login Form -->
+
+    <ScrollView
         android:id="@+id/login_form"
         android:layout_width="match_parent"
         android:layout_height="match_parent" >
         
-       	<RelativeLayout   android:layout_width="match_parent"
-    android:layout_height="match_parent">
-        
-            
-    <EditText
-        android:id="@+id/netLinkText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="110dp"
-        android:ems="10"
-        tools:ignore="TextFields"
-        android:singleLine="true" />
+       	<LinearLayout
+       	    android:layout_width="match_parent"
+    		android:layout_height="wrap_content"
+    		android:layout_gravity="center"
+       		android:gravity="center_horizontal"
+       		android:padding="16dp"
+        	android:orientation="vertical" >
+       	    
+            <TextView
+		        android:id="@+id/netLinkTextView"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:text="@string/promt_netlink"
+		        android:textAppearance="?android:attr/textAppearanceLarge" />
+       	 
+		    <EditText
+		        android:id="@+id/netLinkText"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:ems="10"
+		        tools:ignore="TextFields"
+		        android:singleLine="true" />
+		    
+		    <TextView
+		        android:id="@+id/passwordTextView"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_marginTop="20dp"
+		        android:text="@string/promt_password"
+		        android:textAppearance="?android:attr/textAppearanceLarge" />
 
-    <EditText
-        android:id="@+id/passwordText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/netLinkText"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="75dp"
-        android:ems="10" 
-        android:inputType="textPassword"
-        android:singleLine="true" >
+		    <EditText
+		        android:id="@+id/passwordText"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:ems="10" 
+		        android:inputType="textPassword"
+		        android:singleLine="true" />
 
-        <requestFocus />
-    </EditText>
-
-    <Button
-        android:id="@+id/buttonSignIn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/passwordText"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="47dp"
-        android:text="@string/button_sign_in"
-        android:onClick="login" />
-
-    <TextView
-        android:id="@+id/netLinkTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/netLinkText"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="40dp"
-        android:text="@string/netlink"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
-
-    <TextView
-        android:id="@+id/passwordTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/passwordText"
-        android:layout_alignLeft="@+id/netLinkTextView"
-        android:layout_marginBottom="40dp"
-        android:text="@string/password"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
-    </RelativeLayout></ScrollView>
-
+		    <Button
+		        android:id="@+id/buttonSignIn"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_marginTop="47dp"
+		        android:text="@string/action_sign_in"
+		        android:onClick="login" />
+		  
+		</LinearLayout>
+    </ScrollView>
 </merge>

@@ -4,22 +4,32 @@ import com.plantec.uwm.http.HttpManager;
 
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
-import android.os.StrictMode;
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 
 public class LoginActivity extends Activity {
 	private HttpManager mHttp;
-	private EditText mUsernameField;
-	private EditText mPasswordField;
 	private String mUsername;
 	private String mPassword;
+	private UserLoginTask mAuthenticator = null;
+	
+	private EditText mUsernameField;
+	private EditText mPasswordField;
+	private View mLoginFormView;
+	private View mLoginStatusView;
+	private TextView mLoginStatusMessageView;
 	
 	@SuppressLint("NewApi")
 	@Override
@@ -29,40 +39,57 @@ public class LoginActivity extends Activity {
 	
 		mUsernameField = (EditText) findViewById(R.id.netLinkText);
 		mPasswordField = (EditText) findViewById(R.id.passwordText);
-		mHttp = HttpManager.getInstance();
+		mLoginFormView = findViewById(R.id.login_form);
+		mLoginStatusView = findViewById(R.id.login_status);
+		mLoginStatusMessageView = (TextView) findViewById(R.id.login_status_message);
 		
-		//TODO ASYNC TASK
-		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-		StrictMode.setThreadPolicy(policy); 
+		mHttp = HttpManager.getInstance();
 	}
 	
 	public void login(View view){
+		if (mAuthenticator != null) {
+			return;
+		}
+		
+		mUsernameField.setError(null);
+		mPasswordField.setError(null);
+		
 		mUsername = mUsernameField.getText().toString();
 		mPassword = mPasswordField.getText().toString();
 		
-		try {
-			if (!isNetworkAvailable()){
-				mUsernameField.setText("Network Bro");
-				throw new Exception("Network not available");
-			}
-			if (mHttp.login(mUsername, mPassword) <= 1){
-				mUsernameField.setText("Wrong Creds Bro");
-				throw new Exception("Wrong creds");
-			}
-			
-			SharedPreferences settings = getSharedPreferences("UserInfo", 0);
-			SharedPreferences.Editor editor = settings.edit();
-			editor.putString("Username", mUsername);
-			editor.putString("Password", mPassword);
-			editor.commit();
-			
-			Intent intent = new Intent(this, MainActivity.class);
-			startActivity(intent);
-		} catch (Exception e) {
-			//mUsernameField.setText("Wrong Creds");
-			mPasswordField.setText("");
-			//The credentials you entered do not match our records. Try again.
-			e.printStackTrace();
+		boolean cancel = false;
+		View focusView = null;
+		
+		if (TextUtils.isEmpty(mPassword)){
+			mPasswordField.setError(getString(R.string.error_field_required));
+			focusView = mPasswordField;
+			cancel = true;
+		}
+		
+		if (TextUtils.isEmpty(mUsername)){
+			mUsernameField.setError(getString(R.string.error_field_required));
+			focusView = mUsernameField;
+			cancel = true;
+		} else if (mUsername.contains("@uvic.ca")){
+			mUsernameField.setError(getString(R.string.error_netlink_format));
+			focusView = mUsernameField;
+			cancel = true;
+		}
+		
+		if (!isNetworkAvailable()){
+			mUsernameField.setError(getString(R.string.error_unavailable_network));
+			focusView = mUsernameField;
+			cancel = true;
+		}
+		
+		System.out.println("TESTING::" + cancel + " " + mUsername + " " + mPassword);
+		if (cancel){
+			focusView.requestFocus();
+		} else {
+			mLoginStatusMessageView.setText(R.string.login_progress_signing_in);
+			showProgress(true);
+			mAuthenticator = new UserLoginTask();
+			mAuthenticator.execute((Void) null);
 		}
 	}
 	
@@ -74,5 +101,84 @@ public class LoginActivity extends Activity {
 	    		&& activeNetworkInfo.isConnectedOrConnecting() 
 	    		&& connectivityManager.getActiveNetworkInfo().isAvailable() 
 	    		&& connectivityManager.getActiveNetworkInfo().isConnected();
+	}
+	
+	/**
+	 * Shows the progress UI and hides the login form.
+	 */
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
+	private void showProgress(final boolean show) {
+		// On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
+		// for very easy animations. If available, use these APIs to fade-in
+		// the progress spinner.
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+			int shortAnimTime = getResources().getInteger(
+					android.R.integer.config_shortAnimTime);
+
+			mLoginStatusView.setVisibility(View.VISIBLE);
+			mLoginStatusView.animate().setDuration(shortAnimTime)
+					.alpha(show ? 1 : 0)
+					.setListener(new AnimatorListenerAdapter() {
+						@Override
+						public void onAnimationEnd(Animator animation) {
+							mLoginStatusView.setVisibility(show ? View.VISIBLE
+									: View.GONE);
+						}
+					});
+
+			mLoginFormView.setVisibility(View.VISIBLE);
+			mLoginFormView.animate().setDuration(shortAnimTime)
+					.alpha(show ? 0 : 1)
+					.setListener(new AnimatorListenerAdapter() {
+						@Override
+						public void onAnimationEnd(Animator animation) {
+							mLoginFormView.setVisibility(show ? View.GONE
+									: View.VISIBLE);
+						}
+					});
+		} else {
+			// The ViewPropertyAnimator APIs are not available, so simply show
+			// and hide the relevant UI components.
+			mLoginStatusView.setVisibility(show ? View.VISIBLE : View.GONE);
+			mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+		}
+	}
+	
+	
+	class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
+		@Override
+		protected Boolean doInBackground(Void... params) {
+			try {
+				if (!mHttp.login(mUsername, mPassword))
+					throw new Exception("Login failed");
+			} catch (Exception e) {
+				return false;
+			}
+			return true;
+		}
+
+		@Override
+		protected void onPostExecute(final Boolean success) {
+			mAuthenticator = null;
+			showProgress(false);
+			System.out.println("PostExecute::" + success);
+			if (success) {
+				SharedPreferences settings = getSharedPreferences("UserInfo", 0);
+				SharedPreferences.Editor editor = settings.edit();
+				editor.putString("Username", mUsername);
+				editor.putString("Password", mPassword);
+				editor.commit();
+				finish();
+			} else {
+				mUsernameField.setError(getString(R.string.error_incorrect_credentials));
+				mUsernameField.requestFocus();
+			}
+		}
+
+		@Override
+		protected void onCancelled() {
+			mAuthenticator = null;
+			showProgress(false);
+		}
 	}
 }

@@ -66,9 +66,9 @@ public class MainActivity extends Activity {
         mList.setAdapter(adapter);
 		
 		mText.setText(result + " " + mUsername);
-//		SharedPreferences.Editor editor = settings.edit();
-//		editor.clear();
-//		editor.commit();
+		SharedPreferences.Editor editor = settings.edit();
+		editor.clear();
+		editor.commit();
 		}
 	}
 }

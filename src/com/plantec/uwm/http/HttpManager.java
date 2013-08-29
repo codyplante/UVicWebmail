@@ -37,7 +37,6 @@ public class HttpManager {
 	private HttpResponse mResponse;
 	private HttpGet mHttpGet;
 	private HttpPost mHttpPost;
-	private List <NameValuePair> nvps;
 	
 	private HttpManager(){
 		mHttpClient = new DefaultHttpClient();
@@ -55,42 +54,41 @@ public class HttpManager {
 		return mManager;
 	}
 	
-	public int login(String username, String password) throws Exception{
+	public boolean login(String username, String password) throws Exception{
 		mResponse = httpGet(URL_LOGIN);
+		consumeEntity(mResponse);			
+
+		List <NameValuePair> mCredentials = new ArrayList <NameValuePair>();
+		mCredentials.add(new BasicNameValuePair("username", username));
+		mCredentials.add(new BasicNameValuePair("password", password));
+		mCredentials.add(new BasicNameValuePair("lt", "e1s1"));
+		mCredentials.add(new BasicNameValuePair("_eventId", "submit"));
+		mResponse = httpPost(URL_LOGIN, mCredentials);
 		consumeEntity(mResponse);
 		
-		nvps = new ArrayList <NameValuePair>();
-		nvps.add(new BasicNameValuePair("username", username));
-		nvps.add(new BasicNameValuePair("password", password));
-		nvps.add(new BasicNameValuePair("lt", "e1s1"));
-		nvps.add(new BasicNameValuePair("_eventId", "submit"));
-		mResponse = httpPost(URL_LOGIN, nvps);
+		return (getCookieCount() > 1);
+	}
+	
+	public int webmailLogin(String username, String password) throws Exception{
+		List <NameValuePair> mCredentials = new ArrayList <NameValuePair>();
+		mCredentials.add(new BasicNameValuePair("login_username", username));
+		mCredentials.add(new BasicNameValuePair("secretkey", password));
+		mResponse = httpPost(URL_WLOGIN, mCredentials);
+		consumeEntity(mResponse);
+		
+		mResponse = httpPost(URL_REDIRECT, mCredentials);
 		consumeEntity(mResponse);
 		
 		return getCookieCount();
 	}
 	
 	public void consumeEntity(HttpResponse response) throws Exception{
-		//TODO Testing
+		//TODO Remove after Testing
 		System.out.println("Login form get: " + response.getStatusLine());
 		HttpEntity entity = response.getEntity();
 		if (entity != null) 
 		    entity.consumeContent();
 	}
-	
-	public int webmailLogin(String username, String password) throws Exception{
-		nvps = new ArrayList <NameValuePair>();
-		nvps.add(new BasicNameValuePair("login_username", username));
-		nvps.add(new BasicNameValuePair("secretkey", password));
-		mResponse = httpPost(URL_WLOGIN, nvps);
-		consumeEntity(mResponse);
-		
-		mResponse = httpPost(URL_REDIRECT, nvps);
-		consumeEntity(mResponse);
-		
-		return getCookieCount();	
-	}
-	
 	
 	//TODO BETTER THIS (Repetitive)
 	public String getContent() throws Exception{
@@ -98,7 +96,7 @@ public class HttpManager {
 		return EntityUtils.toString(mResponse.getEntity());
 	}
 	public String getFolders() throws Exception{
-		mResponse = httpGet(URL_CONTENT);
+		mResponse = httpGet(URL_FOLDERS);
 		return EntityUtils.toString(mResponse.getEntity());
 	}
 	
