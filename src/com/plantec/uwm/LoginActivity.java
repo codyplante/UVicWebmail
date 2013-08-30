@@ -9,7 +9,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
@@ -18,6 +17,7 @@ import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -31,9 +31,8 @@ public class LoginActivity extends Activity {
 	private EditText mPasswordField;
 	private View mLoginFormView;
 	private View mLoginStatusView;
-	private TextView mLoginStatusMessageView;
+	private TextView mLoginStatusMessageView;	
 	
-	@SuppressLint("NewApi")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -123,6 +122,16 @@ public class LoginActivity extends Activity {
 	    		&& connectivityManager.getActiveNetworkInfo().isConnected();
 	}
 	
+	private void showKeyboard(){
+		InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+		imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT,0);
+	}
+	
+	private void hideKeyboard(){
+		InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+		imm.hideSoftInputFromWindow(mPasswordField.getWindowToken(), 0);
+	}
+	
 	/**
 	 * Shows the progress UI and hides the login form.
 	 */
@@ -131,6 +140,7 @@ public class LoginActivity extends Activity {
 		// On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
 		// for very easy animations. If available, use these APIs to fade-in
 		// the progress spinner.
+		hideKeyboard();
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
 			int shortAnimTime = getResources().getInteger(
 					android.R.integer.config_shortAnimTime);
@@ -190,8 +200,11 @@ public class LoginActivity extends Activity {
 				editor.commit();
 				finish();
 			} else {
-				mUsernameField.setError(getString(R.string.error_incorrect_credentials));
-				mUsernameField.requestFocus();
+				mUsernameField.setText("");
+				mPasswordField.setText("");
+				mPasswordField.setError(getString(R.string.error_incorrect_credentials));
+				mPasswordField.requestFocus();
+				showKeyboard();
 			}
 		}
 
