@@ -38,8 +38,7 @@
             android:layout_height="wrap_content"
             android:text="@string/no_sender"
             android:textColor="#262321"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+            android:textSize="18sp" />
 
         <LinearLayout
             android:layout_width="wrap_content"

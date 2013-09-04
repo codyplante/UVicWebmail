@@ -6,6 +6,7 @@ public class Mail {
 	private String received;
 	private String url;
 	private boolean readStatus;
+	private boolean attachment;
 	
 	public String getSender() {
 		return sender;
@@ -36,5 +37,11 @@ public class Mail {
 	}
 	public void setReadStatus(boolean readStatus){
 		this.readStatus = readStatus;
+	}
+	public boolean getAttachment(){
+		return attachment;
+	}
+	public void setAttachment(boolean attachment){
+		this.attachment = attachment;
 	}
 }
