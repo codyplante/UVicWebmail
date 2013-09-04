@@ -77,6 +77,11 @@ public class MailHandler {
 				switch(i){
 					case 1:
 						mail.setSender(data.text());
+						if (data.hasAttr("b")){
+							mail.setReadStatus(true);
+						} else {
+							mail.setReadStatus(false);
+						}
 						break;
 					case 2:
 						mail.setReceieved(data.text());

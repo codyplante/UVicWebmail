@@ -5,6 +5,7 @@ public class Mail {
 	private String subject;
 	private String received;
 	private String url;
+	private boolean readStatus;
 	
 	public String getSender() {
 		return sender;
@@ -29,5 +30,11 @@ public class Mail {
 	}
 	public void setUrl(String url) {
 		this.url = url;
+	}
+	public boolean getReadStatus(){
+		return readStatus;
+	}
+	public void setReadStatus(boolean readStatus){
+		this.readStatus = readStatus;
 	}
 }

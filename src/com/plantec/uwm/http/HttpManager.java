@@ -69,7 +69,7 @@ public class HttpManager {
 		return (getCookieCount() > 1);
 	}
 	
-	public int webmailLogin(String username, String password) throws Exception{
+	public boolean webmailLogin(String username, String password) throws Exception{
 		List <NameValuePair> mCredentials = new ArrayList <NameValuePair>();
 		mCredentials.add(new BasicNameValuePair("login_username", username));
 		mCredentials.add(new BasicNameValuePair("secretkey", password));
@@ -79,7 +79,7 @@ public class HttpManager {
 		mResponse = httpPost(URL_REDIRECT, mCredentials);
 		consumeEntity(mResponse);
 		
-		return getCookieCount();
+		return (getCookieCount() > 1);
 	}
 	
 	public void consumeEntity(HttpResponse response) throws Exception{

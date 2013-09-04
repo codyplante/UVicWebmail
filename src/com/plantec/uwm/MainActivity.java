@@ -1,8 +1,10 @@
 package com.plantec.uwm;
 
 import org.jsoup.nodes.Document;
+
 import com.plantec.uwm.http.HttpManager;
 import com.plantec.uwm.mail.MailHandler;
+
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.annotation.SuppressLint;
@@ -33,7 +35,13 @@ public class MainActivity extends Activity {
 		if (!settings.contains("Username")){
 			Intent intent = new Intent(this, LoginActivity.class);
 			startActivity(intent);
+			finish();
 		} else {
+			setup();
+		}
+	}
+	
+	private void setup(){
 		mText = (TextView) findViewById(R.id.text);
 		mList = (ListView) findViewById(R.id.main_list);
 		mHttp = HttpManager.getInstance();
@@ -42,23 +50,28 @@ public class MainActivity extends Activity {
 		mPassword = settings.getString("Password", "").toString();
 
 		try {
-			mHttp.login(mUsername, mPassword);
-		} catch (Exception e1) {
+			if (!mHttp.login(mUsername, mPassword)){
+				finish();
+			}
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			e.printStackTrace();
 		}
 		
 		int result = 0;
+		
 		try {
-			result = mHttp.webmailLogin(mUsername, mPassword);
+			if (!mHttp.webmailLogin(mUsername, mPassword)){
+				finish();
+			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
 		MailHandler mHandler = new MailHandler();
-		Document temp = mHandler.complete();
-		mHandler.parse(temp);
+		Document doc = mHandler.complete();
+		mHandler.parse(doc);
 		
 		ListAdapter adapter = new ListAdapter(this, 
                 R.layout.main_list_item, mHandler.getMail());
@@ -69,6 +82,5 @@ public class MainActivity extends Activity {
 		SharedPreferences.Editor editor = settings.edit();
 		editor.clear();
 		editor.commit();
-		}
 	}
 }

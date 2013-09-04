@@ -6,6 +6,7 @@ import com.plantec.uwm.mail.Mail;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,6 +51,13 @@ public class ListAdapter extends ArrayAdapter<Mail>{
         holder.sender.setText(mail.getSender());
         holder.subject.setText(mail.getSubject());
         holder.received.setText(mail.getReceieved());
+        
+        if (mail.getReadStatus()){
+        	holder.sender.setTypeface(null, Typeface.BOLD);
+        } else {
+        	holder.sender.setTypeface(null, Typeface.NORMAL);
+        }
+        
         return row;
     }
     

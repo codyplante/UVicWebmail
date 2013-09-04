@@ -101,7 +101,6 @@ public class LoginActivity extends Activity {
 			cancel = true;
 		}
 		
-		System.out.println("TESTING::" + cancel + " " + mUsername + " " + mPassword);
 		if (cancel){
 			focusView.requestFocus();
 		} else {
@@ -191,7 +190,6 @@ public class LoginActivity extends Activity {
 		protected void onPostExecute(final Boolean success) {
 			mAuthenticator = null;
 			showProgress(false);
-			System.out.println("PostExecute::" + success);
 			if (success) {
 				SharedPreferences settings = getSharedPreferences("UserInfo", 0);
 				SharedPreferences.Editor editor = settings.edit();
