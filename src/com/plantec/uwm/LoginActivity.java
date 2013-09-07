@@ -12,6 +12,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
 import android.view.KeyEvent;
@@ -189,15 +190,18 @@ public class LoginActivity extends Activity {
 		@Override
 		protected void onPostExecute(final Boolean success) {
 			mAuthenticator = null;
-			showProgress(false);
 			if (success) {
 				SharedPreferences settings = getSharedPreferences("UserInfo", 0);
 				SharedPreferences.Editor editor = settings.edit();
 				editor.putString("Username", mUsername);
 				editor.putString("Password", mPassword);
 				editor.commit();
+				
+				Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+				startActivity(intent);
 				finish();
 			} else {
+				showProgress(false);
 				mUsernameField.setText("");
 				mPasswordField.setText("");
 				mPasswordField.setError(getString(R.string.error_incorrect_credentials));

@@ -17,8 +17,8 @@ import android.widget.TextView;
 public class MainActivity extends Activity {
 	private SharedPreferences settings;
 	private HttpManager mHttp;
-	private TextView mText;
-	private ListView mList;
+	private ListView mMailList;
+	private TextView mEmptyList;
 	private String mUsername;
 	private String mPassword;
 	
@@ -42,8 +42,8 @@ public class MainActivity extends Activity {
 	}
 	
 	private void setup(){
-		mText = (TextView) findViewById(R.id.text);
-		mList = (ListView) findViewById(R.id.main_list);
+		mMailList = (ListView) findViewById(R.id.main_list);
+		mEmptyList = (TextView) findViewById(R.id.main_empty_view);
 		mHttp = HttpManager.getInstance();
 		
 		mUsername = settings.getString("Username", "").toString();
@@ -57,8 +57,6 @@ public class MainActivity extends Activity {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		int result = 0;
 		
 		try {
 			if (!mHttp.webmailLogin(mUsername, mPassword)){
@@ -76,9 +74,8 @@ public class MainActivity extends Activity {
 		ListAdapter adapter = new ListAdapter(this, 
                 R.layout.main_list_item, mHandler.getMail());
         
-        mList.setAdapter(adapter);
+		mMailList.setAdapter(adapter);
 		
-		mText.setText(result + " " + mUsername);
 		SharedPreferences.Editor editor = settings.edit();
 		editor.clear();
 		editor.commit();

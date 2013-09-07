@@ -3,6 +3,7 @@
 
     <!-- General Strings -->
     <string name="app_name">Webmail</string>
+    <string name="loading">Loading...</string>
     
     <!-- Login Strings -->
     <string name="title_activity_login">Login</string>
