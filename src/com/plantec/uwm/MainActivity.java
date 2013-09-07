@@ -11,12 +11,17 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.TextView;
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements OnItemClickListener {
 	private SharedPreferences settings;
 	private HttpManager mHttp;
+	private MailHandler mHandler;
 	private ListView mMailList;
 	private TextView mEmptyList;
 	private String mUsername;
@@ -63,11 +68,10 @@ public class MainActivity extends Activity {
 				finish();
 			}
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
-		MailHandler mHandler = new MailHandler();
+		mHandler = new MailHandler();
 		Document doc = mHandler.complete();
 		mHandler.parse(doc);
 		
@@ -75,9 +79,18 @@ public class MainActivity extends Activity {
                 R.layout.main_list_item, mHandler.getMail());
         
 		mMailList.setAdapter(adapter);
+		mMailList.setOnItemClickListener(this);
 		
-		SharedPreferences.Editor editor = settings.edit();
-		editor.clear();
-		editor.commit();
+	//	SharedPreferences.Editor editor = settings.edit();
+	//	editor.clear();
+	//	editor.commit();
+	}
+
+	@Override
+	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+		Log.i("CLICKER", Integer.toString(position) + " " + Long.toString(id));
+		Intent intent = new Intent(this, ContentsActivity.class);
+		intent.putExtra("url", mHandler.getMail().get(position).getUrl());
+		startActivity(intent);
 	}
 }

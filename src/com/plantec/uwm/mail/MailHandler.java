@@ -34,8 +34,6 @@ public class MailHandler {
 		Elements list2 = doc.getElementsByAttributeValue("valign", "top");
 		int i = 0;
 		for (Element link2 : list2){
-			System.out.println(link2.toString());
-			System.out.println(link2.text());
 			Elements info = link2.getElementsByTag("TD");
 			if (info.isEmpty()){
 				continue;

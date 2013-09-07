@@ -1,5 +1,28 @@
 package com.plantec.uwm.parser;
 
-public class HTMLParser {
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
 
+import com.plantec.uwm.http.HttpManager;
+
+public class HTMLParser {
+	private HttpManager http;
+	
+	public HTMLParser(){
+		http = HttpManager.getInstance();
+	}
+	
+	public String parseMailContent(String url) {
+		Document doc = null;
+		try {
+			doc = Jsoup.parse(http.getHTMLfromURL(url));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Elements data = doc.getElementsByTag("pre");
+		
+		return data.html();
+	}
 }

@@ -4,21 +4,6 @@
     android:layout_height="fill_parent"
     android:baselineAligned="false"
     android:minHeight="48dp" >
-    
-    <LinearLayout
-        android:id="@+id/main_list_item_selector_container"
-        android:layout_width="wrap_content"
-        android:layout_height="fill_parent"
-        android:background="#fbe9d8"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:padding="2dp" >
-
-        <CheckBox
-            android:id="@+id/main_list_item_selector"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/main_list_item_textcontainer"

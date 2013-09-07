@@ -23,6 +23,7 @@ import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 
 public class HttpManager {
+	private static final String URL_BASE = "https://wm3.uvic.ca/src/";
 	private static final String URL_LOGIN = "https://www.uvic.ca/cas/login?service=http%3A%2F%2Fwww.uvic.ca%2F";
 	private static final String URL_WLOGIN = "https://wm3.uvic.ca/src/CASlogin.php"; 
 	private static final String URL_REDIRECT = "https://wm3.uvic.ca/src/redirect.php";
@@ -97,6 +98,11 @@ public class HttpManager {
 	}
 	public String getFolders() throws Exception{
 		mResponse = httpGet(URL_FOLDERS);
+		return EntityUtils.toString(mResponse.getEntity());
+	}
+	
+	public String getHTMLfromURL(String url) throws Exception{
+		mResponse = httpGet(URL_BASE + url);
 		return EntityUtils.toString(mResponse.getEntity());
 	}
 	
