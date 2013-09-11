@@ -7,6 +7,8 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import android.util.Log;
+
 import com.plantec.uwm.http.HttpManager;
 
 public class MailHandler {
@@ -44,7 +46,7 @@ public class MailHandler {
 				switch(i){
 					case 1:
 						mail.setSender(data.text());
-						if (data.hasAttr("b")){
+						if (!data.select("b").isEmpty()){
 							mail.setReadStatus(true);
 						} else {
 							mail.setReadStatus(false);
