@@ -29,6 +29,7 @@ public class HttpManager {
 	private static final String URL_REDIRECT = "https://wm3.uvic.ca/src/redirect.php";
 	private static final String URL_CONTENT = "https://wm3.uvic.ca/src/right_main.php";
 	private static final String URL_FOLDERS = "https://wm3.uvic.ca/src/left_main.php";
+	private static final String URL_HTMLText = "&show_more=0&view_as_html=1";
 	
 	private static HttpManager mManager = null;
 	private static DefaultHttpClient mHttpClient = null;
@@ -102,7 +103,7 @@ public class HttpManager {
 	}
 	
 	public String getHTMLfromURL(String url) throws Exception{
-		mResponse = httpGet(URL_BASE + url);
+		mResponse = httpGet(URL_BASE + url + URL_HTMLText);
 		return EntityUtils.toString(mResponse.getEntity());
 	}
 	

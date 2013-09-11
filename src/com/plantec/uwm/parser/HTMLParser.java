@@ -21,7 +21,7 @@ public class HTMLParser {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		Elements data = doc.getElementsByTag("pre");
+		Elements data = doc.getElementsByAttributeValue("cellspacing", "5");
 		
 		return data.html();
 	}
